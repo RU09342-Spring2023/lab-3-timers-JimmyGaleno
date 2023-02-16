@@ -71,16 +71,16 @@ __interrupt void Port_2(void)
     // Update CCR0 value based on speed
           if (t == 50000) {                   // starts with inital clock of 50000
               t = 20000;
-          } else if (t == 20000) {
+          } else if (t == 20000) {            // speeds up the cycle to 20000 (first phase when button pressed)
               t = 15000;
-          } else if (t == 15000) {
+          } else if (t == 15000) {            // speeds up the cycle to 15000 (second phase when button pressed)
               t = 10000;
-          }else if (t == 10000) {
+          }else if (t == 10000) {             // speeds up the cycle to 10000 (third phase when button pressed again)
               t = 5000;
-          }else if (t == 5000) {
+          }else if (t == 5000) {              // speeds up the cycle to 5000 (fourth phase when button pressed again)
               t = 1000;
           }else {
-              t = 50000;                        // resets to initial clock of 50000
+              t = 50000;                        // resets to initial clock of 50000 (when button pressed for the fifth time)
           }
 }
 
