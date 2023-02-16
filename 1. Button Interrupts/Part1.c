@@ -1,8 +1,8 @@
 /*
  * Part1.c
  *
- *  Created on: Feb 11, 2023
- *      Author: Russell Trafford
+ *  Created on: Feb 16, 2023
+ *      Author: Jimmy Galeno
  *
  *  This code is a template which will change the color of the LED being blinked using the interrupt routine.
  */
