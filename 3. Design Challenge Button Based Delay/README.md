@@ -50,3 +50,5 @@ You will need to upload your code, well documented. You will also need a README 
 - How are the peripherals configured (what modes, what settings)?
 - What design considerations did you have to take to account for things like the timer rollover?
 - How should the user use your code?
+
+This system has the LED blinking speed controlled by how long the user holds down a button. When the program starts the LED blinks at a set speed of around 4 Hz. When the user presses the button, the program counts for how long it is held, which then changes the speed of the blinking LED. The other button is then used as a reset to reset the LED blinking speed back to the original. This code utilizes the green LED which is port P6.6 and the buttons P2.3 and P4.1. The button P2.3 is used as the button that changes the blinking speed depending on how long the button is pressed for. Button P4.1 is used as the reset button which, when pressed, resets the speed of the green LED to the initial speed of around 4 Hz. 
