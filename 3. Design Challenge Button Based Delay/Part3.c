@@ -18,9 +18,9 @@
 void gpioInit();
 void timerInit();
 
-volatile unsigned int counting = 0;
-volatile unsigned long count_timer = 0;
-volatile unsigned int button_pressed = 0;
+volatile unsigned int counting = 0;           // used to track if timer is counting
+volatile unsigned long count_timer = 0;       // store how long button is pressed for
+volatile unsigned int button_pressed = 0;     // tracks whether button is pressed or not
 
 void main() {
   WDTCTL = WDTPW | WDTHOLD;
@@ -37,35 +37,34 @@ void main() {
 
 #pragma vector=PORT2_VECTOR
 __interrupt void Port_2(void) {
-  P2IFG &= ~BIT3;
+  P2IFG &= ~BIT3;                       // clears the interrupt flag
 
-  if (P2IES & BIT3) {
-    // Button pressed
-    P6OUT &= ~BIT6;
-    counting = 1;
-    count_timer = 0;
-    button_pressed = 1;
+  if (P2IES & BIT3) {                   // if interrupt triggered by falling edge (button pressed)
+    P6OUT &= ~BIT6;                     // green LED off
+    counting = 1;                       // counting is triggered
+    count_timer = 0;                    // reset to 0
+    button_pressed = 1;                 // button pressed equal to 1
     P2IES &= ~BIT3;
   } else {
     // Button released
-    counting = 0;
+    counting = 0;                       // counting reset to 0
     P2IES |= BIT3;
   }
 }
 
 #pragma vector=PORT4_VECTOR
 __interrupt void Port_4(void) {
-  P4IFG &= ~BIT1;
+  P4IFG &= ~BIT1;                       // clear interrupt
 
-  TB1CCR0 = initialtimervalue;
-  counting = 0;
-  button_pressed = 1;
+  TB1CCR0 = initialtimervalue;          // sets TB1CCRO to initaltimervalue of 100
+  counting = 0;                         // counting set to 0
+  button_pressed = 1;                   // button pressed set to 1
 }
 
 #pragma vector=TIMER0_B0_VECTOR
 __interrupt void Timer0_B0_ISR(void) {
-  if (counting) {
-    count_timer++;
+  if (counting) {                       // if counting is not set to 0
+    count_timer++;                      // increment the count_timer
   }
 
   TB0CCR0 += 1;
@@ -73,12 +72,12 @@ __interrupt void Timer0_B0_ISR(void) {
 
 #pragma vector=TIMER1_B0_VECTOR
 __interrupt void Timer1_B0_ISR(void) {
-  P6OUT ^= BIT6;
+  P6OUT ^= BIT6;                        // toggle state for green LED
 
-  if (button_pressed) {
-    TB1CCR0 += count_timer;
+  if (button_pressed) {                 // if button pressed not set to 0
+    TB1CCR0 += count_timer;             // increment value of TB1CCR0 by the value of count_timer
   } else {
-    TB1CCR0 += initialtimervalue;
+    TB1CCR0 += initialtimervalue;       // increment the value of TB1CCR0 by the value of initialtimervalue
   }
 }
 
@@ -105,7 +104,7 @@ void timerInit(){
     // Initialize Timer B1 in Continuous Mode using ACLK as the source CLK with Interrupts turned on
     TB0CTL = TBSSEL_1 | MC_2 | ID_3;           // ACLK, continuous mode, clear TAR
 
-    TB0CCR0 = 1;                                // Set CCR0 to toggle every 1/2 second
+    TB0CCR0 = 1;
 
     TB0CCTL0 |= CCIE;                           // Enable CCR0 interrupt
 
